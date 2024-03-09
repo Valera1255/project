@@ -134,4 +134,59 @@ window.addEventListener('DOMContentLoaded', () => {
 
     setClock('.timer', deadLine);
 
+
+    // Modal Window
+    // поцепили дата (data-modal) атрибути на кнопки для упрощения работы (только с ними для показа одного и того же дествия)
+    const modalTrigger = document.querySelectorAll('[data-modal]'),
+          modal = document.querySelector('.modal'),
+          modalCloseBtn = document.querySelector('[data-close]');
+
+    
+    // цепляем обработчик событий на кнопки (добавляем (переключаем) клас) - перебираем все кнопки и цепляем на все
+    
+    modalTrigger.forEach(btn => {
+        btn.addEventListener('click', () => {
+            //modal.classList.add('show');
+            //modal.classList.remove('hide');
+    
+            // вариант с toogle
+            modal.classList.toggle('show');
+            // делаем так что бы страничка не скролилась при вызове модельного окна
+            document.body.style.overflow = 'hidden';
+    
+        });
+    });
+
+    // don't repeat yourself (нельзя повторяться в коде) - лучше вынести в функцию
+    function closeModel() {
+        // вариант с toogle
+        modal.classList.toggle('show');
+        document.body.style.overflow = '';
+    }
+
+    modalCloseBtn.addEventListener('click', closeModel); //функция будет выполенна после клика
+
+        // вариант с добавлением класов
+        //modal.classList.add('hide');
+        //modal.classList.remove('show'););
+
+
+
+    // закрытие модального окна кликая на подложку
+    modal.addEventListener('click', (e) => {
+        if(e.target === modal) {
+            closeModel();
+        }
+    });
+
+    //Закрытие модельного окна через клавишу ESC и если он содержит класс show (что бы не всегда срабатывала функция)
+
+    document.addEventListener('keydown', (e) => {
+        if(e.code === 'Escape' && modal.classList.contains('show')) {
+            closeModel();
+        }
+    });
+
+    // коды клавиш https://www.toptal.com/developers/keycode
+
 });

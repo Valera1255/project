@@ -141,21 +141,32 @@ window.addEventListener('DOMContentLoaded', () => {
           modal = document.querySelector('.modal'),
           modalCloseBtn = document.querySelector('[data-close]');
 
-    
+
+          
+    // отдельная функция для вызова модального окна
+    function openModal() {
+        modal.classList.add('show');
+        modal.classList.remove('hide');
+        document.body.style.overflow = '';
+        clearInterval(modalTimerId);
+    }
+
     // цепляем обработчик событий на кнопки (добавляем (переключаем) клас) - перебираем все кнопки и цепляем на все
-    
+
     modalTrigger.forEach(btn => {
-        btn.addEventListener('click', () => {
+        btn.addEventListener('click', openModal);
+    });
             //modal.classList.add('show');
             //modal.classList.remove('hide');
     
             // вариант с toogle
-            modal.classList.toggle('show');
+            //modal.classList.toggle('show');
+
+            /*
             // делаем так что бы страничка не скролилась при вызове модельного окна
-            document.body.style.overflow = 'hidden';
-    
-        });
-    });
+            document.body.style.overflow = 'hidden';*/
+
+
 
     // don't repeat yourself (нельзя повторяться в коде) - лучше вынести в функцию
     function closeModel() {
@@ -188,5 +199,23 @@ window.addEventListener('DOMContentLoaded', () => {
     });
 
     // коды клавиш https://www.toptal.com/developers/keycode
+
+
+    // появление модального окна когда пользователь долистал сайт до конца
+    const modalTimerId = setTimeout(openModal, 5000);
+
+    //функция удаления обработчика событий scroll
+
+    function showModalByScroll() {
+        if (window.scrollY + document.documentElement.clientHeight >= document.documentElement.scrollHeight) {
+            openModal();
+            window.removeEventListener('scroll', showModalByScroll)
+        }
+    }
+
+    window.addEventListener('scroll', showModalByScroll);
+ //настройки появление однажды
+    /*{once:true}*/
+
 
 });

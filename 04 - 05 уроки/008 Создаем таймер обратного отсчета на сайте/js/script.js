@@ -202,7 +202,7 @@ window.addEventListener('DOMContentLoaded', () => {
 
 
     // появление модального окна когда пользователь долистал сайт до конца
-    const modalTimerId = setTimeout(openModal, 5000);
+    // const modalTimerId = setTimeout(openModal, 5000);
 
     //функция удаления обработчика событий scroll
 
@@ -217,5 +217,93 @@ window.addEventListener('DOMContentLoaded', () => {
  //настройки появление однажды
     /*{once:true}*/
 
+
+
+    
+
+    // Используєм класи для карточек (update через rest оператор)
+    class MenuCard {
+        constructor(src, alt, title, desctription, price, parentSelector, ...classes) {
+            this.src = src;
+            this.alt = alt;
+            this.title = title;
+            this.desctription = desctription;
+            this.price = price;
+            this.classes = classes; //не подходит => || 'menu__item'
+            //parentSelector родительский селектор для добавления нового div на старинцу
+            this.parent = document.querySelector(parentSelector);
+            this.transfer = 38; // статический курс
+            this.changeToUAH();
+        }
+
+        // метод для конвертации валют
+        changeToUAH () {
+            this.price = this.price * this.transfer;
+        }
+
+        // метод создания верстки (update - логическая конструкция условия)
+        render() {
+            const element = document.createElement('div');
+            
+            if (this.classes.length === 0) {
+                this.element = 'menu__item';
+                element.classList.add (this.element);
+            } else {
+                // пройтись по каждому елементу классу вытащить название класа и подключить к названию класса
+                this.classes.forEach(className => element.classList.add(className));
+            }
+
+            // удлаляем каждую информацию и передаем то что в класе как аргумент
+            element.innerHTML = `
+                    <img src=${this.src} alt=${this.alt}>
+                    <h3 class="menu__item-subtitle">${this.title}</h3>
+                    <div class="menu__item-descr">${this.desctription}</div>
+                    <div class="menu__item-divider"></div>
+                    <div class="menu__item-price">
+                        <div class="menu__item-cost">Цена:</div>
+                        <div class="menu__item-total"><span>${this.price}</span> грн/день</div>
+                    </div>
+                `;
+                this.parent.append(element);//пуш новго div на страницу
+        }
+
+    }
+
+    //Визов рендеринг структуры - вызов объэкта единажды и он исчезнит (без переменной) - используєм объэкт на месте
+    
+    // Вариант 1
+    /*const div = new MenuCard();
+    div.render();*/
+
+    // передаем аргументы (с верстки в ковычках) + добавим все карточки на страницу
+    new MenuCard(
+        "img/tabs/vegy.jpg",
+        "vegy",
+        'Меню "Фитнес"',
+        'Меню "Фитнес" - это новый подход к приготовлению блюд: больше свежих овощей и фруктов. Продукт активных и здоровых людей. Это абсолютно новый продукт с оптимальной ценой и высоким качеством!',
+        9,
+        '.menu .container'
+        // добавляєм клас который будем помещать на страницу (пишем не через точку так как мы будем его помещать в масимв и использовать в класс листе)
+    ).render();
+
+    new MenuCard(
+        "img/tabs/elite.jpg",
+        "elite",
+        'Меню “Премиум”',
+        'В меню “Премиум” мы используем не только красивый дизайн упаковки, но и качественное исполнение блюд. Красная рыба, морепродукты, фрукты - ресторанное меню без похода в ресторан!',
+        14,
+        '.menu .container'
+    ).render();
+
+    new MenuCard(
+        "img/tabs/post.jpg",
+        "post",
+        'Меню "Постное"',
+        'Меню “Постное” - это тщательный подбор ингредиентов: полное отсутствие продуктов животного происхождения, молоко из миндаля, овса, кокоса или гречки, правильное количество белков за счет тофу и импортных вегетарианских стейков.',
+        21,
+        '.menu .container'
+    ).render();
+
+    // Чтобы не сломалась верстака удаляем с HTLM статичные карточки
 
 });
